@@ -18,7 +18,7 @@ def get_fruit_load_list(csr):
 
 def insert_row_snowflake(new_fruit, csr):
     with csr.cursor() as my_cur:
-        my_cur.execute("INSERT into FRUIT_LOAD_LIST values ('from streamlit')")
+        my_cur.execute("INSERT into FRUIT_LOAD_LIST values ('" + new_fruit + "')")
         return 'Thanks for adding ' + new_fruit 
 
 streamlit.title('diner')
