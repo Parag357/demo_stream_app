@@ -14,11 +14,14 @@ def get_fruit_data(fruit):
 def get_fruit_load_list(csr):
     with csr.cursor() as my_cur:
         my_cur.execute("select * from FRUIT_LOAD_LIST")
-        return my_cur.fetchall()
-
+        fruit_load = my_cur.fetchall()
+        my_cur.close()
+        return fruit_load
+        
 def insert_row_snowflake(new_fruit, csr):
     with csr.cursor() as my_cur:
         my_cur.execute("INSERT into FRUIT_LOAD_LIST values ('" + new_fruit + "')")
+        my_cur.close()
         return 'Thanks for adding ' + new_fruit 
 
 streamlit.title('diner')
@@ -50,7 +53,7 @@ except URLError as e:
     streamlit.error()
 
 
-streamlit.header("This Fruit Load list contains:")
+streamlit.header("View Our Fruit List and Add your Favourites")
 add_fruit = streamlit.text_input('What fruit would you like to add')
 # add a button to UI
 if streamlit.button('Add a fruit to the list'):
