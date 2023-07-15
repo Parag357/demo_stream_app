@@ -2,6 +2,7 @@ import streamlit
 import pandas
 import requests
 import snowflake.connector
+from urllib.error import URLError
 
 streamlit.title('diner')
 streamlit.header('Breakfast Menu')
@@ -20,13 +21,19 @@ streamlit.dataframe(fruits_to_show)
 
 
 streamlit.header("Fruityvice Fruit Advice!")
-fruit_choice = streamlit.text_input('What fruit would you like information about?', "kiwi")
-streamlit.write('The user entered ', fruit_choice)
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
-# normalize the DF
-fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
-# display the normalised DF on  https://demostreamapp-800odtu4mhh.streamlit.app/
-streamlit.dataframe(fruityvice_normalized)
+try:
+    fruit_choice = streamlit.text_input('What fruit would you like information about?')
+    if not fruit_choice:
+        streamlit.error('kindly select a fruit')
+    else:
+        fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
+        # normalize the DF
+        fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+        # display the normalised DF on  https://demostreamapp-800odtu4mhh.streamlit.app/
+        streamlit.dataframe(fruityvice_normalized)
+
+except URLError as e:
+    streamlit.error()
 
 
 streamlit.stop() # stopping load to DB from UI
