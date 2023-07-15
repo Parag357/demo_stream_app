@@ -11,6 +11,11 @@ def get_fruit_data(fruit):
     # display the normalised DF on  https://demostreamapp-800odtu4mhh.streamlit.app/
     return fruityvice_normalized
 
+def get_fruit_load_list(csr):
+    with csr.cursor() as my_cur:
+        my_cur.execute("insert into FRUIT_LOAD_LIST values('from streamlit')")
+        return my_cur.fetchall()
+
 streamlit.title('diner')
 streamlit.header('Breakfast Menu')
 streamlit.text('Omega 3 & Blueberry Oatmeal')
@@ -40,14 +45,13 @@ except URLError as e:
     streamlit.error()
 
 
-streamlit.stop() # stopping load to DB from UI
+streamlit.header("This Fruit Load list contains:")
 
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-my_cur = my_cnx.cursor()
-my_cur.execute("insert into FRUIT_LOAD_LIST values('from streamlit')")
-my_data_row = my_cur.fetchall()
-streamlit.header("The fruit  load list contains:")
-streamlit.dataframe(my_data_row)
+# add a button to UI
+if stream.button('Gert Fruit Load List'):
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_row = get_fruit_load_list(my_cnx)
+    streamlit.dataframe(my_data_row)
 
 
 
